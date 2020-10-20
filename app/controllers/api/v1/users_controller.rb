@@ -14,7 +14,8 @@ module Api
       end
 
       def info
-        render json: {user: current_user}
+        user = UserSerializer.new(current_user).serializable_hash 
+        render json: {user: user}
       end
 
       private
