@@ -4,14 +4,10 @@ module Api
       before_action :authorized
 
       def index
-        @contracts = Contract.where(domainId: current_user.domainIds.split(',').map(&:to_i))       
-        result = ContractSerializer.new(@contracts).serializable_hash
+        @contracts = Contract.search(params)
+        result = ContractSerializer.new(@contracts, include: [:inet_services]).serializable_hash
         render json: { contracts: result }
       end
-
-      def search(search)
-      end
-
     end
   end
 end
