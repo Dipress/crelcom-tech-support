@@ -3,11 +3,12 @@ class Contract < ApplicationRecord
   self.primary_key = "id"
 
   has_many :inet_services, class_name: 'InetService', foreign_key: 'contractId'
+  has_many :balances, class_name: 'Balace', foreign_key: 'cid'
+  has_many :contract_parameter_type2, class_name: 'ContractParameterType2', foreign_key: 'cid'
+  has_many :global_tariffs, class_name: 'GlobalTariff', foreign_key: 'cid'
 
-  def self.search(search)
+  def self.search(contracts, search)
     if search
-        contracts = Contract.all #current_user.domainIds.split(',').map(&:to_i)       
-
         if search[:title].present?
           contracts = contracts.where(title: search[:title])
         end
@@ -22,6 +23,14 @@ class Contract < ApplicationRecord
 
         return contracts
     end
+  end
+
+  def limit
+    self.closesumma
+  end
+
+  def current_balance
+    Balance.by_cmy(self.id, Time.now.month, Time.now.year)
   end
 end
 
